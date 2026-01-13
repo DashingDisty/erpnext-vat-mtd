@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
 from frappe.utils import get_url
+from urllib.parse import urlencode
 import requests_oauthlib as ro
 import datetime
 import json
@@ -14,9 +15,10 @@ class HMRCAuthorisations(Document):
 	pass
 
 def get_redirect_uri():
-	# Manual test: click "Get authorisation" and confirm redirect_uri=https%3A%2F%2F... in the HMRC URL.
+	# [GUS-work-local-NA] Manual test: click "Get authorisation" and confirm redirect_uri=https%3A%2F%2F... in the HMRC URL.
 	callback_cmd = "uk_vat.uk_vat_return.doctype.hmrc_authorisations.hmrc_authorisations.hmrc_callback"
-	return get_url("/", {"cmd": callback_cmd})
+	query_string = urlencode({"cmd": callback_cmd})
+	return get_url(f"/?{query_string}")
 
 @frappe.whitelist()
 def authorize_access(name):

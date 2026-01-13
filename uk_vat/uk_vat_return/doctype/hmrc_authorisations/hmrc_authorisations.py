@@ -5,7 +5,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-from frappe.utils import get_request_site_address
+from frappe.utils import get_url
 import requests_oauthlib as ro
 import datetime
 import json
@@ -14,7 +14,9 @@ class HMRCAuthorisations(Document):
 	pass
 
 def get_redirect_uri():
-	return get_request_site_address(True) + "?cmd=uk_vat.uk_vat_return.doctype.hmrc_authorisations.hmrc_authorisations.hmrc_callback"
+	# Manual test: click "Get authorisation" and confirm redirect_uri=https%3A%2F%2F... in the HMRC URL.
+	callback_cmd = "uk_vat.uk_vat_return.doctype.hmrc_authorisations.hmrc_authorisations.hmrc_callback"
+	return get_url("/", {"cmd": callback_cmd})
 
 @frappe.whitelist()
 def authorize_access(name):
@@ -116,4 +118,3 @@ def get_session(company):
 						auto_refresh_kwargs=extra,
 						auto_refresh_url=api_base+'/oauth/token',
 						token_updater=token_updater)
-

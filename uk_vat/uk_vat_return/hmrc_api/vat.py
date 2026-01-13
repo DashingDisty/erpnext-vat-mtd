@@ -13,7 +13,7 @@ accept_header = { "Accept": "application/vnd.hmrc.1.0+json" }
 def is_company_vat_enabled(company):
 
     if not frappe.db.get_single_value("HMRC API Settings", "enable"):
-        return false
+        return False
 
     enabled_count = frappe.db.sql("""
                 select count(name) `tabHMRC Authorisations` a
@@ -25,8 +25,11 @@ def is_company_vat_enabled(company):
     return enabled_count > 0
 
 def get_vrn(company):
-    tax_id = frappe.db.get_value("Company", company, "tax_id")
-    if not tax_id.upper().startswith("GB"):
+    tax_id = (frappe.db.get_value("Company", company, "tax_id") or "").strip().replace(" ", "")
+    if not tax_id:
+        frappe.throw("Company Tax ID is not set. It must start with GB followed by 9 digits.")
+    tax_id = tax_id.upper()
+    if not (tax_id.startswith("GB") and len(tax_id) == 11 and tax_id[2:].isdigit()):
         frappe.throw("Company Tax ID setting is invalid. Should be GB followed by 9 digits.")
     return tax_id[2:]
 

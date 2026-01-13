@@ -205,7 +205,7 @@ to ask HMRC for a list of outstanding returns. It will then attempt to match the
 your VAT return to one of these outstanding obligations. If there is a match, it will then
 submit your return.
 
-## License
-
-GNU/General Public License (see [license.txt](license.txt))
-
+ ### Sandbox setup and troubleshooting
+ 
+ For detailed sandbox configuration (redirect URI, VRN/Test User setup, and common HMRC error fixes), see [doc/hmrc_sandbox_guide.md](doc/hmrc_sandbox_guide.md).
+ 

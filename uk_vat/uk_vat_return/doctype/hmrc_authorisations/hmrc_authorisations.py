@@ -18,7 +18,12 @@ def get_redirect_uri():
 	# [GUS-work-local-NA] Manual test: click "Get authorisation" and confirm redirect_uri=https%3A%2F%2F... in the HMRC URL.
 	callback_cmd = "uk_vat.uk_vat_return.doctype.hmrc_authorisations.hmrc_authorisations.hmrc_callback"
 	query_string = urlencode({"cmd": callback_cmd})
-	return get_url(f"/?{query_string}")
+	base_url = frappe.conf.get("site_url") or get_url()
+	if base_url and base_url.startswith("http://") and frappe.conf.get("host_name"):
+		base_url = "https://{0}".format(frappe.conf.get("host_name"))
+	if base_url and base_url.endswith("/"):
+		base_url = base_url[:-1]
+	return "{0}/?{1}".format(base_url, query_string)
 
 @frappe.whitelist()
 def authorize_access(name):
